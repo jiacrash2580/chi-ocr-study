@@ -25,15 +25,6 @@ tf.app.flags.DEFINE_string('checkpoint_path', 'checkpoints_mlt/', '')
 FLAGS = tf.app.flags.FLAGS
 
 
-global input_image
-global input_im_info
-global bbox_pred
-global cls_pred
-global cls_prob
-global saver
-global crnn_model
-
-
 def get_images():
     files = []
     exts = ['jpg', 'png', 'jpeg', 'JPG']
@@ -60,7 +51,6 @@ def resize_image(img):
     new_w = new_w if new_w // 16 == 0 else (new_w // 16 + 1) * 16
     re_im = cv2.resize(img, (new_w, new_h), interpolation=cv2.INTER_LINEAR)
     return re_im, (new_h / img_size[0], new_w / img_size[1])
-
 
 
 class MainHandler(tornado.web.RequestHandler):
@@ -147,6 +137,5 @@ application = tornado.web.Application([(r"/ocr", MainHandler), ])
 
 
 if __name__ == '__main__':
-    #tf.app.run()
     application.listen(8188)
     tornado.ioloop.IOLoop.instance().start()
