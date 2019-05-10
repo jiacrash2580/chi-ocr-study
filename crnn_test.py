@@ -1,4 +1,3 @@
-import numpy as np
 import sys, os
 import time
 
@@ -49,10 +48,10 @@ def crnn_recognition(cropped_image, model):
 
     preds_size = Variable(torch.IntTensor([preds.size(0)]))
     sim_pred = converter.decode(preds.data, preds_size.data, raw=False)
-    print('results: {0}'.format(sim_pred))
+    return sim_pred
 
 
-if __name__ == '__main__':
+def init_crnn():
     # crnn network
     model = crnn.CRNN(32, 1, nclass, 256)
     print('loading pretrained model from {0}'.format(crnn_model_path))
@@ -63,10 +62,17 @@ if __name__ == '__main__':
     else:
         # 模型是gpu模型,通过cpu模式加载
         model.load_state_dict(torch.load(crnn_model_path, map_location='cpu'))
+    return model
+
+
+if __name__ == '__main__':
+    model = init_crnn()
     started = time.time()
     ## read an image
     image = Image.open(opt.images_path)
 
-    crnn_recognition(image, model)
+    ret = crnn_recognition(image, model)
+    print('results: {0}'.format(ret))
+
     finished = time.time()
     print('elapsed time: {0}'.format(finished - started))
